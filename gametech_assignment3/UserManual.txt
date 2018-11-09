@@ -1,0 +1,14 @@
+Welcome to our game!
+
+ABOUT
+You are a VERY DELICATE cube that should avoid touching anything at all costs. This includes the walls, the big cube in the middle, and the big cube sitting in the middle of the room. If your health reaches 0 you are destroyed )-: If the enemy health reaches 0 you win! Luckily for you, the enemy is also very delicate and will take damage from anything touching it.
+
+CONTROLS
+* M2 swings the paddles around you
+* WASD moves you around
+* Arrow keys, Space, and LShift move the camera so that you can better see yourself
+* M1 shoots a ball from the camera
+* Press P to toggle sound.
+
+DIFFICULTY
+To win easily just shoot balls at the cube. For a challenge, try to only reflect balls back to kill it.

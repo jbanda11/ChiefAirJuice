@@ -1,0 +1,13 @@
+material Smile
+{
+    technique
+    {
+        pass
+        {
+		    texture_unit
+			{
+			    texture smile.png
+			}
+        }
+    }
+}

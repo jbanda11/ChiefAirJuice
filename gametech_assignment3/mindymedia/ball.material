@@ -1,0 +1,13 @@
+material Ball
+{
+    technique
+    {
+        pass
+        {
+		    texture_unit
+			{
+			    texture nm_up.png
+			}
+        }
+    }
+}
