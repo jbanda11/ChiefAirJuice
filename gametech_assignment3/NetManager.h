@@ -170,6 +170,7 @@ public:
   bool multiPlayerInit(int maskDepth = MASK_DEPTH);
   bool broadcastUDPInvitation(int maskDepth = MASK_DEPTH);
   bool joinMultiPlayer(std::string invitation);
+  ConnectionInfo getNetServer(void) const;
   //! @}
 
   ClientData tcpServerData;

@@ -754,6 +754,15 @@ bool NetManager::joinMultiPlayer(std::string invitation) {
   return startClient();
 }
 
+/**
+ * @brief Accessor for the netServer private member variable
+ *
+ * @return netServer member variable
+ */
+ConnectionInfo NetManager::getNetServer() const {
+  return this->netServer;
+}
+
 
 /* ****************************************************************************
  * Private

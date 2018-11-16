@@ -16,6 +16,9 @@ http://www.ogre3d.org/wiki/
 */
 
 #include "GameApplication.h"
+#include <unistd.h>
+#include <limits.h>
+#include <iostream>
 
 //---------------------------------------------------------------------------
 
@@ -115,7 +118,8 @@ void GameApplication::startGameUI(void) {
 	CEGUI::FrameWindow* gameInfoHeader = createGUIWindow("GameInfoHeader", infoXStart, infoYStart, infoWidth*4, infoHeight, "Players");
 	if(isServer) {
 		std::ostringstream infoStr;
-		infoStr << "Tell your friends to connect to hostname " << netMgr->getIPstring().c_str();
+
+		infoStr << "Tell your friends to connect to hostname " << serverHostName;
 		gameInfoHeader->setText(infoStr.str());
 	}
 	gameUI->addChild(gameInfoHeader);
@@ -203,12 +207,20 @@ void GameApplication::startBasicNetworking() {
 	}
 
 	if(isServer) {
+		char hostname[HOST_NAME_MAX];
+		if (gethostname(hostname, HOST_NAME_MAX) < 0) {
+			std::cerr << "Error occurred while attempting to retrieve the hostname\n";
+		}
+		else {
+			serverHostName = hostname;
+		}
+
 		netMgr->addNetworkInfo();
 		netMgr->acceptConnections();
 		if (netMgr->startServer()){
 			printf("%s\n", "Server started successfully!");
 			printf("=======================Server Info=======================\n");
-			printf("Server IPaddr: %s\n", netMgr->getIPstring().c_str());
+			std::cout << "Hostname: " << hostname << '\n';
 			printf("Note: If no hostname is provided, use IPaddr as server hostname.\n");
 			printf("=========================================================\n");
 		} else {

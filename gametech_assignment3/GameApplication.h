@@ -130,6 +130,7 @@ public:
 	// Used or networking to determine if this game instance is the server
 	bool isServer;
 	std::string hostName;
+	std::string serverHostName;
 	int numClients;
 
   GameApplication(void);
