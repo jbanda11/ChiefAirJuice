@@ -697,12 +697,27 @@ bool GameApplication::processUnbufferedInput(const Ogre::FrameEvent& fe)
 	camVector *= CAM_SPEED;
 
 	// Act on camera inputs
-	manager->getCamera()->translate(playerVector * fe.timeSinceLastFrame);
-	manager->getCamera()->translate(camVector * fe.timeSinceLastFrame);
+	Ogre::Vector3 newPosition = player->getPosition() + playerVector * fe.timeSinceLastFrame;
+	if (dead || (newPosition.x < WALL_SIZE * 0.5 - 20 &&
+			newPosition.x > -WALL_SIZE * 0.5 + 20 &&
+			newPosition.z < WALL_SIZE * 0.5 - 20 &&
+			newPosition.z > -WALL_SIZE * 0.5 + 20)
+	) {
+		manager->getCamera()->translate(playerVector * fe.timeSinceLastFrame);
+		manager->getCamera()->translate(camVector * fe.timeSinceLastFrame);	
+	}
 
 	if(!dead) {
 		// Also move player
-		player->translate(playerVector*fe.timeSinceLastFrame);
+		
+		if (
+			newPosition.x < WALL_SIZE * 0.5 - 20 &&
+			newPosition.x > -WALL_SIZE * 0.5 + 20 &&
+			newPosition.z < WALL_SIZE * 0.5 - 20 &&
+			newPosition.z > -WALL_SIZE * 0.5 + 20
+		) {
+			player->translate(playerVector * fe.timeSinceLastFrame);
+		}
 
 		Ogre::Vector3 position = player->getPosition();
 
