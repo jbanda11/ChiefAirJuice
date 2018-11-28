@@ -474,8 +474,8 @@ void GameApplication::makeWalls() {
 	wallBack = createWall("WallBackNode", Ogre::Vector3(0, 0, WALL_SIZE/2), Ogre::Vector3(180, 0, 0));
 	wallLeft = createWall("WallLeftNode", Ogre::Vector3(-WALL_SIZE/2, 0, 0), Ogre::Vector3(90, 0, 0));
 	wallRight = createWall("WallRightNode", Ogre::Vector3(WALL_SIZE/2, 0, 0),  Ogre::Vector3(-90, 0, 0));
-	wallUp = createWall("WallUpNode",  Ogre::Vector3(0, WALL_SIZE/2, 0),  Ogre::Vector3(0, 90, 0));
-	wallDown = createWall("WallDownNode", Ogre::Vector3(0, -WALL_SIZE/2, 0), Ogre::Vector3(0, -90, 0));
+	wallUp = createWall("WallUpNode",  Ogre::Vector3(0, WALL_SIZE/2, 0),  Ogre::Vector3(0, 90, 0), "Sky");
+	wallDown = createWall("WallDownNode", Ogre::Vector3(0, -WALL_SIZE/2, 0), Ogre::Vector3(0, -90, 0), "Field");
 	walls.push_back(wallFacing);
 	walls.push_back(wallBack);
 	walls.push_back(wallLeft);
@@ -485,8 +485,12 @@ void GameApplication::makeWalls() {
 }
 
 GameObject* GameApplication::createWall(const std::string& name, Ogre::Vector3 position, Ogre::Vector3 yawPitchRoll) {
+	return createWall(name, position, yawPitchRoll, "");
+}
+
+GameObject* GameApplication::createWall(const std::string& name, Ogre::Vector3 position, Ogre::Vector3 yawPitchRoll, std::string materialName) {
 	Ogre::Vector3 dimensions = Ogre::Vector3(WALL_SIZE, WALL_SIZE, 10);
-	GameObject* wall = manager->createBoxGameObject(name, dimensions);
+	GameObject* wall = manager->createBoxGameObject(name, dimensions, materialName);
 	wall->setPosition(position);
 	wall->rotate(yawPitchRoll);
 	wall->attachBoxCollider(dimensions, 1.0);

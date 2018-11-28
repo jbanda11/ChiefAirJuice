@@ -154,6 +154,7 @@ private:
 	bool processNonPhysicsObjects(const Ogre::FrameEvent& fe);
 	void makeWalls(void);
 	GameObject* createWall(const std::string& name, Ogre::Vector3 position, Ogre::Vector3 direction);
+	GameObject* createWall(const std::string& name, Ogre::Vector3 position, Ogre::Vector3 direction, std::string materialName);
 	std::vector<GameObject*> spawnBalls(GameObject* source);
 	Ogre::Real getBallWallThreshold(void);
 	Ogre::Real generateRandomScale(void);

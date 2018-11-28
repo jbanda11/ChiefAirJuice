@@ -33,6 +33,14 @@ GameObject* GameManager::createBoxGameObject(std::string name, Ogre::Vector3 dim
 	return box;
 }
 
+// Create a box GO of specified dimensions
+GameObject* GameManager::createBoxGameObject(std::string name, Ogre::Vector3 dimensions, std::string materialName) {
+	GameObject* box = createGameObject(name, "cube.mesh", materialName);
+	box->sceneNode->setScale(dimensions/DEFAULT_CUBE_DIMENSION);
+
+	return box;
+}
+
 // Create a sphere GO of a specified radius
 GameObject* GameManager::createSphereGameObject(std::string name, float radius) {
 	GameObject* ball = createGameObject(name, "sphere.mesh", "");

@@ -6,7 +6,14 @@
 // Initialize GameObject count
 uint GameObject::objectCount = 0;
 
-GameObject::GameObject(Ogre::SceneManager* scene, GameManager* manager, Simulator* physicsEngine, std::string name, std::string meshName, std::string materialName) :
+GameObject::GameObject(
+	Ogre::SceneManager* scene,
+	GameManager* manager,
+	Simulator* physicsEngine,
+	std::string name,
+	std::string meshName,
+	std::string materialName
+) :
 	scene(scene),
 	game_manager(manager),
 	physicsEngine(physicsEngine),

@@ -6,7 +6,7 @@ material Wall
         {
 		    texture_unit
 			{
-			    texture nm_rt.png
+			    texture metal.jpg
 			}
         }
     }

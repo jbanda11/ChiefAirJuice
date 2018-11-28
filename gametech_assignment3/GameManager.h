@@ -37,6 +37,7 @@ public:
 	GameManager(Ogre::SceneManager* scnMgr, Ogre::Camera* ogreCam, Simulator* simulator);
 
   GameObject* createBoxGameObject(std::string name, Ogre::Vector3 dimensions);
+  GameObject* createBoxGameObject(std::string name, Ogre::Vector3 dimensions, std::string materialName);
   GameObject* createSphereGameObject(std::string name, float radius);
 
 	// TODO Way to attach no material?
