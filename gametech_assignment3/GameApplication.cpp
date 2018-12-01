@@ -406,7 +406,7 @@ void GameApplication::createPlayer() {
 }
 
 GameObject* GameApplication::spawnPlayerCube(Ogre::Vector3 position) {
-	GameObject* cube = manager->createBoxGameObject("Player", Ogre::Vector3(40, 40, 40));
+	GameObject* cube = manager->createBoxGameObject("Player", Ogre::Vector3(40, 40, 40), "White");
 	cube->label = LABEL_PLAYER;
 	cube->setPosition(position);
 	cube->attachBoxCollider(Ogre::Vector3(40, 40, 40), 1.0);

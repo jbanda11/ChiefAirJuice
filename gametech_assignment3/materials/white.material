@@ -1,0 +1,13 @@
+material White
+{
+    technique
+    {
+        pass
+        {
+		    texture_unit
+			{
+			    texture white.jpg
+			}
+        }
+    }
+}
