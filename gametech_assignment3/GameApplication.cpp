@@ -401,6 +401,9 @@ void GameApplication::createPlayer() {
 
 	player = spawnPlayerCube(position);
 	player->rigidbody->setUserPointer(player);
+	player->setGravity(btVector3(0.0f, 0.0f, 0.0f));
+	player->rigidbody->setActivationState(DISABLE_DEACTIVATION);
+
 	// Move camera close to the player
 	manager->getCamera()->setPosition(player->getPosition() + Ogre::Vector3(0, 50, 0));
 }
@@ -410,7 +413,7 @@ GameObject* GameApplication::spawnPlayerCube(Ogre::Vector3 position) {
 	cube->label = LABEL_PLAYER;
 	cube->setPosition(position);
 	cube->attachBoxCollider(Ogre::Vector3(40, 40, 40), 1.0);
-	cube->setKinematic();
+	// cube->setKinematic();
 	cube->initialize();
 	cube->enableCollisions();
 
@@ -669,6 +672,7 @@ bool GameApplication::processUnbufferedInput(const Ogre::FrameEvent& fe)
 	if(mKeyboard->isKeyDown(OIS::KC_D)) {
 		playerVector += mCamera->getRealRight();
 	}
+
 	// Camera movement
 	Ogre::Vector3 camVector = Ogre::Vector3::ZERO;
 	// Forward
@@ -691,33 +695,23 @@ bool GameApplication::processUnbufferedInput(const Ogre::FrameEvent& fe)
 
 	playerVector = Ogre::Vector3(playerVector.x, 0, playerVector.z);
 	playerVector.normalise();
-	playerVector *= CAM_SPEED;
+	playerVector *= CAM_SPEED * 0.5;
+
 	camVector = Ogre::Vector3(camVector.x, camVertical, camVector.z);
 	camVector.normalise();
 	camVector *= CAM_SPEED;
 
 	// Act on camera inputs
 	Ogre::Vector3 newPosition = player->getPosition() + playerVector * fe.timeSinceLastFrame;
-	if (dead || (newPosition.x < WALL_SIZE * 0.5 - 20 &&
-			newPosition.x > -WALL_SIZE * 0.5 + 20 &&
-			newPosition.z < WALL_SIZE * 0.5 - 20 &&
-			newPosition.z > -WALL_SIZE * 0.5 + 20)
-	) {
-		manager->getCamera()->translate(playerVector * fe.timeSinceLastFrame);
+	if (dead) {
 		manager->getCamera()->translate(camVector * fe.timeSinceLastFrame);	
 	}
 
 	if(!dead) {
 		// Also move player
 		
-		if (
-			newPosition.x < WALL_SIZE * 0.5 - 20 &&
-			newPosition.x > -WALL_SIZE * 0.5 + 20 &&
-			newPosition.z < WALL_SIZE * 0.5 - 20 &&
-			newPosition.z > -WALL_SIZE * 0.5 + 20
-		) {
-			player->translate(playerVector * fe.timeSinceLastFrame);
-		}
+		player->rigidbody->setLinearVelocity(btVector3(playerVector.x, playerVector.y, playerVector.z));
+		player->rigidbody->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
 
 		Ogre::Vector3 position = player->getPosition();
 

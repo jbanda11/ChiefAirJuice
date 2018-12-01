@@ -102,6 +102,7 @@ class GameObject {
       return rigidbody;
     }
     void setKinematic(void);
+    void setGravity(const btVector3 &acceleration);
     void makeImmovable(void);
 
     // ScriptHandler iteration methods
