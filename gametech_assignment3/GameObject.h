@@ -83,7 +83,8 @@ class GameObject {
         Simulator* physicsEngine,
         std::string name,
         std::string meshName,
-        std::string materialName
+        std::string materialName,
+        OgreMotionState* motionState
     );
     void initialize(void);
     virtual ~GameObject(void);

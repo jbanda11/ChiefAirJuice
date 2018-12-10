@@ -24,6 +24,7 @@ http://www.ogre3d.org/wiki/
 //---------------------------------------------------------------------------
 
 const Ogre::Real GameApplication::WALL_SIZE = 8000;
+const Ogre::Real GameApplication::BOX_SIZE = 800;
 const Ogre::Real GameApplication::CAM_SPEED = 800;
 const Ogre::Real GameApplication::MOUSE_SENSITIVITY = .13;
 
@@ -387,6 +388,7 @@ void GameApplication::startGame() {
 	mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
 
 	makeWalls();
+	makeBoxes();
 
 	/* Create player */
 	createPlayer();
@@ -414,8 +416,9 @@ GameObject* GameApplication::spawnPlayerCube(Ogre::Vector3 position) {
 		"Player",
 		Ogre::Vector3(40, 40, 40),
 		"White",
-		new Play
+		new PlayerMotionState(manager->getCamera(), btTransform(), mSceneMgr->createSceneNode())
 	);
+
 	cube->label = LABEL_PLAYER;
 	cube->setPosition(position);
 	cube->attachBoxCollider(Ogre::Vector3(40, 40, 40), 1.0);
@@ -507,6 +510,21 @@ GameObject* GameApplication::createWall(const std::string& name, Ogre::Vector3 p
 	wall->initialize();
 
 	return wall;
+}
+
+void GameApplication::makeBoxes() {
+	createBox("Box1", Ogre::Vector3(0, 0, 0));
+}
+
+GameObject* GameApplication::createBox(const std::string& name, Ogre::Vector3 position) {
+	Ogre::Vector3 dimensions = Ogre::Vector3(BOX_SIZE, BOX_SIZE, BOX_SIZE);
+	GameObject* box = manager->createBoxGameObject(name, dimensions, "Wood");
+	box->setPosition(position);
+	box->attachBoxCollider(dimensions, 1.0);
+	box->makeImmovable();
+	box->initialize();
+
+	return box;
 }
 
 // Generate a random number between -1 and 1

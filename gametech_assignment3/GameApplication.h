@@ -155,6 +155,10 @@ private:
 	void makeWalls(void);
 	GameObject* createWall(const std::string& name, Ogre::Vector3 position, Ogre::Vector3 direction);
 	GameObject* createWall(const std::string& name, Ogre::Vector3 position, Ogre::Vector3 direction, std::string materialName);
+
+	void makeBoxes(void);
+	GameObject* createBox(const std::string& name, Ogre::Vector3 position);
+
 	std::vector<GameObject*> spawnBalls(GameObject* source);
 	Ogre::Real getBallWallThreshold(void);
 	Ogre::Real generateRandomScale(void);

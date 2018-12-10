@@ -1,15 +1,15 @@
 /* A motion state for a player that allows the camera to follow you */
 
 #include "OgreMotionState.h"
+#include <iostream>
 
 #ifndef __PlayerMotionState_h_
 #define __PlayerMotionState_h_
 
 class PlayerMotionState : public OgreMotionState {
 public:
-	PlayerMotionState(Ogre::SceneNode* cameraNode, const btTransform &initialPos, Ogre::SceneNode* node) {
-		super(initialPos, node);
-		mCameraNode = mCameraNode;
+	PlayerMotionState(Ogre::SceneNode* cameraNode, const btTransform &initialPos, Ogre::SceneNode* node) : OgreMotionState(initialPos, node) {
+		mCameraNode = cameraNode;
 	}
 
 	virtual void setWorldTransform(const btTransform &worldTrans) {
@@ -30,11 +30,17 @@ public:
 	    mPos1 = worldTrans;
 
 	    btVector3 difference = pos - currentPosition;
-	    node->translate(difference.x(), difference.y(), difference.z());
+	    if (mCameraNode) {
+	    	mCameraNode->translate(difference.x(), difference.y(), difference.z());
+	    }
+  	}
+
+  	void setCameraNode(Ogre::SceneNode* cameraNode) {
+  		mCameraNode = cameraNode;
   	}
 
 private:
 	Ogre::SceneNode* mCameraNode;
-}
+};
 
 #endif // __PlayerMotionState_h_ 

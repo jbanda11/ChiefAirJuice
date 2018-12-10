@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS= -I m4
 
-noinst_HEADERS = CollisionContext.h BaseApplication.h GameApplication.h GameManager.h GameObject.h OgreMotionState.h Simulator.h CollisionCallback.h ScriptHandler.h audio.h NetManager.h
+noinst_HEADERS = CollisionContext.h BaseApplication.h GameApplication.h GameManager.h GameObject.h OgreMotionState.h Simulator.h CollisionCallback.h ScriptHandler.h audio.h NetManager.h PlayerMotionState.h
 
 bin_PROGRAMS = ChiefAirJuice
 ChiefAirJuice_CPPFLAGS = -I$(top_srcdir)

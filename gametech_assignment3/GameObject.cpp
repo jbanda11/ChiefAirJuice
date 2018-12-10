@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include <iostream>
 
 /*
 	The representation of everything in our game.
@@ -21,7 +22,7 @@ GameObject::GameObject(
 	name(name),
 	meshName(meshName),
 	materialName(materialName),
-	motionState(motionState),
+	motionState(motionState)
 {
 	shouldCollide = false;
 	label = LABEL_DEFAULT;
@@ -211,12 +212,16 @@ void GameObject::attachSphereCollider(int radius, float mass) {
 	btCollisionShape* rigidShape = new btSphereShape(radius);
 	rigidShape->calculateLocalInertia(body_mass, localInertia);
 
+	std::cout << "Attaching colliders" << '\n';
+
 	if (!motionState)
 		motionState = new OgreMotionState(transform, sceneNode);
 	else {
 		motionState->setWorldTransform(transform);
 		motionState->setSceneNode(sceneNode);
 	}
+
+	std::cout << "Attachment was successful for: " << name << '\n';
 
 	// Create rigidbody
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(body_mass, motionState, rigidShape, localInertia);
