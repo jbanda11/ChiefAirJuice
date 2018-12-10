@@ -84,6 +84,7 @@ class GameApplication : public BaseApplication
 {
 private:
 	static const Ogre::Real WALL_SIZE;
+	static const Ogre::Real BOX_SIZE;
 	static const Ogre::Real CAM_SPEED;
 	static const Ogre::Real BALL_RADIUS;
 	static const Ogre::Real BALL_SPEED;

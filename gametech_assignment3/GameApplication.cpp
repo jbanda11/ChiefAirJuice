@@ -513,7 +513,10 @@ GameObject* GameApplication::createWall(const std::string& name, Ogre::Vector3 p
 }
 
 void GameApplication::makeBoxes() {
-	createBox("Box1", Ogre::Vector3(0, 0, 0));
+	createBox("Box1", Ogre::Vector3(-1750, wallDown->getPosition().y + BOX_SIZE * 0.5, 1750));
+	createBox("Box2", Ogre::Vector3(-1750, wallDown->getPosition().y + BOX_SIZE * 0.5, -1750));
+	createBox("Box3", Ogre::Vector3(1750, wallDown->getPosition().y + BOX_SIZE * 0.5, 1750));
+	createBox("Box4", Ogre::Vector3(1750, wallDown->getPosition().y + BOX_SIZE * 0.5, -1750));
 }
 
 GameObject* GameApplication::createBox(const std::string& name, Ogre::Vector3 position) {
