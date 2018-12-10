@@ -12,14 +12,16 @@ GameObject::GameObject(
 	Simulator* physicsEngine,
 	std::string name,
 	std::string meshName,
-	std::string materialName
+	std::string materialName,
+	OgreMotionState* motionState
 ) :
 	scene(scene),
 	game_manager(manager),
 	physicsEngine(physicsEngine),
 	name(name),
 	meshName(meshName),
-	materialName(materialName)
+	materialName(materialName),
+	motionState(motionState),
 {
 	shouldCollide = false;
 	label = LABEL_DEFAULT;
@@ -174,7 +176,12 @@ void GameObject::attachBoxCollider(Ogre::Vector3 dimensions, float mass) {
 	btCollisionShape* rigidShape = new btBoxShape(btVector3(dimensions.x * 0.5, dimensions.y * 0.5, dimensions.z * 0.5));
 	rigidShape->calculateLocalInertia(body_mass, localInertia);
 
-	motionState = new OgreMotionState(transform, sceneNode);
+	if (!motionState)
+		motionState = new OgreMotionState(transform, sceneNode);
+	else {
+		motionState->setWorldTransform(transform);
+		motionState->setSceneNode(sceneNode);
+	}
 
 	// Create rigidbody
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(body_mass, motionState, rigidShape, localInertia);
@@ -204,7 +211,12 @@ void GameObject::attachSphereCollider(int radius, float mass) {
 	btCollisionShape* rigidShape = new btSphereShape(radius);
 	rigidShape->calculateLocalInertia(body_mass, localInertia);
 
-	motionState = new OgreMotionState(transform, sceneNode);
+	if (!motionState)
+		motionState = new OgreMotionState(transform, sceneNode);
+	else {
+		motionState->setWorldTransform(transform);
+		motionState->setSceneNode(sceneNode);
+	}
 
 	// Create rigidbody
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(body_mass, motionState, rigidShape, localInertia);

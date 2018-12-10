@@ -77,7 +77,14 @@ class GameObject {
     //ScriptHandler objects attatched to this game object
     std::vector<ScriptHandler *> scripts;
 
-    GameObject(Ogre::SceneManager* scene, GameManager* manager, Simulator* physicsEngine, std::string name, std::string meshName, std::string materialName);
+    GameObject(
+        Ogre::SceneManager* scene,
+        GameManager* manager,
+        Simulator* physicsEngine,
+        std::string name,
+        std::string meshName,
+        std::string materialName
+    );
     void initialize(void);
     virtual ~GameObject(void);
 

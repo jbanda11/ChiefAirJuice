@@ -16,6 +16,7 @@ http://www.ogre3d.org/wiki/
 */
 
 #include "GameApplication.h"
+#include "PlayerMotionState.h"
 #include <unistd.h>
 #include <limits.h>
 #include <iostream>
@@ -409,7 +410,12 @@ void GameApplication::createPlayer() {
 }
 
 GameObject* GameApplication::spawnPlayerCube(Ogre::Vector3 position) {
-	GameObject* cube = manager->createBoxGameObject("Player", Ogre::Vector3(40, 40, 40), "White");
+	GameObject* cube = manager->createBoxGameObject(
+		"Player",
+		Ogre::Vector3(40, 40, 40),
+		"White",
+		new Play
+	);
 	cube->label = LABEL_PLAYER;
 	cube->setPosition(position);
 	cube->attachBoxCollider(Ogre::Vector3(40, 40, 40), 1.0);

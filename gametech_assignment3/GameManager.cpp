@@ -41,6 +41,17 @@ GameObject* GameManager::createBoxGameObject(std::string name, Ogre::Vector3 dim
 	return box;
 }
 
+GameObject* GameManager::createBoxGameObject(
+	std::string name,
+	Ogre::Vector3 dimensions,
+	std::string materialName,
+	OgreMotionState* motionState
+) {
+	GameObject* box = createGameObject(name, "cube.mesh", materialName, motionState);
+	box->sceneNode->setScale(dimensions / DEFAULT_CUBE_DIMENSION);
+	return box;
+}
+
 // Create a sphere GO of a specified radius
 GameObject* GameManager::createSphereGameObject(std::string name, float radius) {
 	GameObject* ball = createGameObject(name, "sphere.mesh", "");
@@ -54,15 +65,43 @@ GameObject* GameManager::createSphereGameObject(std::string name, float radius) 
   * special GO types should call this. Names are automatically numbered based on a global counter of GameObjects.
   */
 GameObject* GameManager::createGameObject(std::string name, std::string meshName, std::string materialName) {
-	// Create GameObject
+	return createGameObject(name, meshName, materialName, NULL);
+}
+
+/**
+ * Creates a game object and adds it to the list of game objects
+ *
+ * @param name
+ * @param meshName refers to the name of the mesh in the Ogre resource manager
+ * @param materialName also refers to the name of the material in the Ogre
+ * 	resource manager
+ * @param motionState
+ * @return The game object
+ */
+GameObject* GameManager::createGameObject(
+	std::string name,
+	std::string meshName,
+	std::string materialName,
+	OgreMotionState* motionState
+) {
 	std::ostringstream goName;
 	goName << ++goCount << "_" << name;
-	GameObject* gameObject = new GameObject(scene, this, physicsEngine, goName.str(), meshName, materialName);
+	GameObject* gameObject = new GameObject(
+		scene,
+		this,
+		physicsEngine,
+		goName.str(),
+		meshName,
+		materialName,
+		motionState
+	);
+
 	// Track GameObject
 	allGameObjects.push_back(gameObject);
 
-	return gameObject;
+	return gameObject;	
 }
+
 
 // Remove a game object from the manager by name
 GameObject* GameManager::removeGameObject(std::string name){
