@@ -41,3 +41,9 @@ NOTES:
 
 Javier worked on the textures and physics
 Samuel created a few textures and implemented the new machine name feature 
+
+# FINAL TURN IN
+
+* We have implemented obstacles. We also implemented a few more texture changes
+
+Note that this **does not** represent the final project, but it's an improvement over milestone 4.2. We'll be working on the networking before Thursday, when we demo

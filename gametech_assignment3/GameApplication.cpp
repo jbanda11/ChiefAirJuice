@@ -412,12 +412,22 @@ void GameApplication::createPlayer() {
 }
 
 GameObject* GameApplication::spawnPlayerCube(Ogre::Vector3 position) {
-	GameObject* cube = manager->createBoxGameObject(
-		"Player",
-		Ogre::Vector3(40, 40, 40),
-		"White",
-		new PlayerMotionState(manager->getCamera(), btTransform(), mSceneMgr->createSceneNode())
-	);
+	GameObject* cube;
+	if (gameState != GAME_RUNNING) {
+		cube = manager->createBoxGameObject(
+			"Player",
+			Ogre::Vector3(40, 40, 40),
+			"White",
+			new PlayerMotionState(manager->getCamera(), btTransform(), mSceneMgr->createSceneNode())
+		);
+	}
+	else {
+		cube = manager->createBoxGameObject(
+			"Player",
+			Ogre::Vector3(40, 40, 40),
+			"White"
+		);
+	}
 
 	cube->label = LABEL_PLAYER;
 	cube->setPosition(position);
