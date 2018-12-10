@@ -10,6 +10,7 @@ class OgreMotionState : public btMotionState {
 protected:
   Ogre::SceneNode* mVisibleobj;
   btTransform mPos1;
+
 public:
   OgreMotionState(const btTransform &initialpos, Ogre::SceneNode* node) {
     mVisibleobj = node;
@@ -36,6 +37,15 @@ public:
     mVisibleobj->setPosition(pos.x(), pos.y(), pos.z());
 
     mPos1 = worldTrans;
+  }
+
+  /**
+   * Mutator for the scene node associated with the motion state
+   *
+   * @param node
+   */
+  void setSceneNode(Ogre::SceneNode* node) {
+    mVisibleobj = node;
   }
 };
 

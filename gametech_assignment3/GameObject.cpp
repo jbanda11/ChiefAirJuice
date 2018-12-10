@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include <iostream>
 
 /*
 	The representation of everything in our game.
@@ -12,14 +13,16 @@ GameObject::GameObject(
 	Simulator* physicsEngine,
 	std::string name,
 	std::string meshName,
-	std::string materialName
+	std::string materialName,
+	OgreMotionState* motionState
 ) :
 	scene(scene),
 	game_manager(manager),
 	physicsEngine(physicsEngine),
 	name(name),
 	meshName(meshName),
-	materialName(materialName)
+	materialName(materialName),
+	motionState(motionState)
 {
 	shouldCollide = false;
 	label = LABEL_DEFAULT;
@@ -81,7 +84,7 @@ void GameObject::translate(Ogre::Vector3 position) {
 
 		sceneNode->translate(position);
 
-	} else if(physicsType == KINEMATIC) {
+	} else {
 		btTransform newTransform;
 		rigidbody->getMotionState()->getWorldTransform(newTransform);
 		btVector3 oldPos = newTransform.getOrigin();
@@ -130,6 +133,7 @@ void GameObject::setOrientation(Ogre::Quaternion quat) {
 		btTransform newTransform;
 		btTransform oldTransform;
 		rigidbody->getMotionState()->getWorldTransform(oldTransform);
+
 		// Set the new quat as rotation for the transform
 		btQuaternion btQuat(quat.x, quat.y, quat.z, quat.w);
 		newTransform.setIdentity();
@@ -158,10 +162,12 @@ void GameObject::attachBoxCollider(Ogre::Vector3 dimensions, float mass) {
 	// Create bt Transform
 	btTransform transform;
 	transform.setIdentity();
+
 	// Set Transform rotation
 	Ogre::Quaternion quaternion = sceneNode->getOrientation();
 	btQuaternion btQuat(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
 	transform.setRotation(btQuat);
+
 	// Set Transform position
 	transform.setOrigin(btVector3(sceneNode->getPosition().x, sceneNode->getPosition().y, sceneNode->getPosition().z));
 
@@ -171,7 +177,12 @@ void GameObject::attachBoxCollider(Ogre::Vector3 dimensions, float mass) {
 	btCollisionShape* rigidShape = new btBoxShape(btVector3(dimensions.x * 0.5, dimensions.y * 0.5, dimensions.z * 0.5));
 	rigidShape->calculateLocalInertia(body_mass, localInertia);
 
-	motionState = new OgreMotionState(transform, sceneNode);
+	if (!motionState)
+		motionState = new OgreMotionState(transform, sceneNode);
+	else {
+		motionState->setWorldTransform(transform);
+		motionState->setSceneNode(sceneNode);
+	}
 
 	// Create rigidbody
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(body_mass, motionState, rigidShape, localInertia);
@@ -179,9 +190,6 @@ void GameObject::attachBoxCollider(Ogre::Vector3 dimensions, float mass) {
 	rigidbody->setRestitution(1.00f);
 	rigidbody->setFriction(0);
 	rigidbody->setUserPointer(this);
-
-	// Add collision flag for collision callbacks
-	rigidbody->setCollisionFlags(rigidbody->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
 	// Add to engine
 	physicsEngine->dynamicsWorld->addRigidBody(rigidbody);
@@ -204,7 +212,16 @@ void GameObject::attachSphereCollider(int radius, float mass) {
 	btCollisionShape* rigidShape = new btSphereShape(radius);
 	rigidShape->calculateLocalInertia(body_mass, localInertia);
 
-	motionState = new OgreMotionState(transform, sceneNode);
+	std::cout << "Attaching colliders" << '\n';
+
+	if (!motionState)
+		motionState = new OgreMotionState(transform, sceneNode);
+	else {
+		motionState->setWorldTransform(transform);
+		motionState->setSceneNode(sceneNode);
+	}
+
+	std::cout << "Attachment was successful for: " << name << '\n';
 
 	// Create rigidbody
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(body_mass, motionState, rigidShape, localInertia);
@@ -212,9 +229,6 @@ void GameObject::attachSphereCollider(int radius, float mass) {
 	rigidbody->setRestitution(1.00f);
 	rigidbody->setFriction(0);
 	rigidbody->setUserPointer(this);
-
-	// Add collision flag for collision callbacks
-	rigidbody->setCollisionFlags(rigidbody->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
 	// Add to engine
 	physicsEngine->dynamicsWorld->addRigidBody(rigidbody);
@@ -229,6 +243,18 @@ void GameObject::setKinematic() {
 		std::cerr << "Tried to setKinematic on object without physics named " << getName() << std::endl;
 	}
 }
+
+/**
+ * Sets the gravity for the GameObject's rigid body
+ *
+ * Call this AFTER adding the rigid body to the world. i.e., after a call to
+ * attach___Collider()
+ * @param acceleration the new acceleration for gravity
+ */
+void GameObject::setGravity(const btVector3 &acceleration) {
+	rigidbody->setGravity(acceleration);
+}
+
 
 void GameObject::makeImmovable() {
 	if(physicsType != NONE) {

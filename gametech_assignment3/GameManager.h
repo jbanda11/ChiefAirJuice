@@ -38,10 +38,12 @@ public:
 
   GameObject* createBoxGameObject(std::string name, Ogre::Vector3 dimensions);
   GameObject* createBoxGameObject(std::string name, Ogre::Vector3 dimensions, std::string materialName);
+  GameObject* createBoxGameObject(std::string name, Ogre::Vector3 dimensions, std::string materialName, OgreMotionState* motionState);
   GameObject* createSphereGameObject(std::string name, float radius);
 
 	// TODO Way to attach no material?
 	GameObject* createGameObject(std::string name, std::string meshName, std::string materialName);
+  GameObject* createGameObject(std::string name, std::string meshName, std::string materialName, OgreMotionState* motionState);
 	GameObject* findGameObject(std::string name);
   GameObject* findGameObjectID(uint id);
   GameObject* removeGameObject(std::string name);

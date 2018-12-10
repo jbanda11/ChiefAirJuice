@@ -84,6 +84,7 @@ class GameApplication : public BaseApplication
 {
 private:
 	static const Ogre::Real WALL_SIZE;
+	static const Ogre::Real BOX_SIZE;
 	static const Ogre::Real CAM_SPEED;
 	static const Ogre::Real BALL_RADIUS;
 	static const Ogre::Real BALL_SPEED;
@@ -155,6 +156,10 @@ private:
 	void makeWalls(void);
 	GameObject* createWall(const std::string& name, Ogre::Vector3 position, Ogre::Vector3 direction);
 	GameObject* createWall(const std::string& name, Ogre::Vector3 position, Ogre::Vector3 direction, std::string materialName);
+
+	void makeBoxes(void);
+	GameObject* createBox(const std::string& name, Ogre::Vector3 position);
+
 	std::vector<GameObject*> spawnBalls(GameObject* source);
 	Ogre::Real getBallWallThreshold(void);
 	Ogre::Real generateRandomScale(void);

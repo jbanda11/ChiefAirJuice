@@ -16,6 +16,7 @@ http://www.ogre3d.org/wiki/
 */
 
 #include "GameApplication.h"
+#include "PlayerMotionState.h"
 #include <unistd.h>
 #include <limits.h>
 #include <iostream>
@@ -23,6 +24,7 @@ http://www.ogre3d.org/wiki/
 //---------------------------------------------------------------------------
 
 const Ogre::Real GameApplication::WALL_SIZE = 8000;
+const Ogre::Real GameApplication::BOX_SIZE = 800;
 const Ogre::Real GameApplication::CAM_SPEED = 800;
 const Ogre::Real GameApplication::MOUSE_SENSITIVITY = .13;
 
@@ -386,6 +388,7 @@ void GameApplication::startGame() {
 	mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
 
 	makeWalls();
+	makeBoxes();
 
 	/* Create player */
 	createPlayer();
@@ -401,16 +404,25 @@ void GameApplication::createPlayer() {
 
 	player = spawnPlayerCube(position);
 	player->rigidbody->setUserPointer(player);
+	player->setGravity(btVector3(0.0f, 0.0f, 0.0f));
+	player->rigidbody->setActivationState(DISABLE_DEACTIVATION);
+
 	// Move camera close to the player
 	manager->getCamera()->setPosition(player->getPosition() + Ogre::Vector3(0, 50, 0));
 }
 
 GameObject* GameApplication::spawnPlayerCube(Ogre::Vector3 position) {
-	GameObject* cube = manager->createBoxGameObject("Player", Ogre::Vector3(40, 40, 40), "White");
+	GameObject* cube = manager->createBoxGameObject(
+		"Player",
+		Ogre::Vector3(40, 40, 40),
+		"White",
+		new PlayerMotionState(manager->getCamera(), btTransform(), mSceneMgr->createSceneNode())
+	);
+
 	cube->label = LABEL_PLAYER;
 	cube->setPosition(position);
 	cube->attachBoxCollider(Ogre::Vector3(40, 40, 40), 1.0);
-	cube->setKinematic();
+	// cube->setKinematic();
 	cube->initialize();
 	cube->enableCollisions();
 
@@ -498,6 +510,24 @@ GameObject* GameApplication::createWall(const std::string& name, Ogre::Vector3 p
 	wall->initialize();
 
 	return wall;
+}
+
+void GameApplication::makeBoxes() {
+	createBox("Box1", Ogre::Vector3(-1750, wallDown->getPosition().y + BOX_SIZE * 0.5, 1750));
+	createBox("Box2", Ogre::Vector3(-1750, wallDown->getPosition().y + BOX_SIZE * 0.5, -1750));
+	createBox("Box3", Ogre::Vector3(1750, wallDown->getPosition().y + BOX_SIZE * 0.5, 1750));
+	createBox("Box4", Ogre::Vector3(1750, wallDown->getPosition().y + BOX_SIZE * 0.5, -1750));
+}
+
+GameObject* GameApplication::createBox(const std::string& name, Ogre::Vector3 position) {
+	Ogre::Vector3 dimensions = Ogre::Vector3(BOX_SIZE, BOX_SIZE, BOX_SIZE);
+	GameObject* box = manager->createBoxGameObject(name, dimensions, "Wood");
+	box->setPosition(position);
+	box->attachBoxCollider(dimensions, 1.0);
+	box->makeImmovable();
+	box->initialize();
+
+	return box;
 }
 
 // Generate a random number between -1 and 1
@@ -669,6 +699,7 @@ bool GameApplication::processUnbufferedInput(const Ogre::FrameEvent& fe)
 	if(mKeyboard->isKeyDown(OIS::KC_D)) {
 		playerVector += mCamera->getRealRight();
 	}
+
 	// Camera movement
 	Ogre::Vector3 camVector = Ogre::Vector3::ZERO;
 	// Forward
@@ -691,33 +722,23 @@ bool GameApplication::processUnbufferedInput(const Ogre::FrameEvent& fe)
 
 	playerVector = Ogre::Vector3(playerVector.x, 0, playerVector.z);
 	playerVector.normalise();
-	playerVector *= CAM_SPEED;
+	playerVector *= CAM_SPEED * 0.5;
+
 	camVector = Ogre::Vector3(camVector.x, camVertical, camVector.z);
 	camVector.normalise();
 	camVector *= CAM_SPEED;
 
 	// Act on camera inputs
 	Ogre::Vector3 newPosition = player->getPosition() + playerVector * fe.timeSinceLastFrame;
-	if (dead || (newPosition.x < WALL_SIZE * 0.5 - 20 &&
-			newPosition.x > -WALL_SIZE * 0.5 + 20 &&
-			newPosition.z < WALL_SIZE * 0.5 - 20 &&
-			newPosition.z > -WALL_SIZE * 0.5 + 20)
-	) {
-		manager->getCamera()->translate(playerVector * fe.timeSinceLastFrame);
+	if (dead) {
 		manager->getCamera()->translate(camVector * fe.timeSinceLastFrame);	
 	}
 
 	if(!dead) {
 		// Also move player
 		
-		if (
-			newPosition.x < WALL_SIZE * 0.5 - 20 &&
-			newPosition.x > -WALL_SIZE * 0.5 + 20 &&
-			newPosition.z < WALL_SIZE * 0.5 - 20 &&
-			newPosition.z > -WALL_SIZE * 0.5 + 20
-		) {
-			player->translate(playerVector * fe.timeSinceLastFrame);
-		}
+		player->rigidbody->setLinearVelocity(btVector3(playerVector.x, playerVector.y, playerVector.z));
+		player->rigidbody->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
 
 		Ogre::Vector3 position = player->getPosition();
 
